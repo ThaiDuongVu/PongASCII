@@ -1,9 +1,8 @@
 import curses
+import random
 
 screen = curses.initscr()
 screen.nodelay(1)
-
-# ASCII table reference: https://www.ascii-code.com/
 
 board_width = 40 * 2
 board_height = 20
@@ -27,30 +26,45 @@ class Player:
         for i in range(self.height):
             screen.addstr(self.y + i, self.x, self.char)
 
-    def check_input(self, player_id, key):
+    def check_input(self, player_id, input_key):
+        # ASCII table reference: https://www.ascii-code.com/
         if player_id == 1:
-            if key == ord("w"):
+            if input_key == ord("w"):
                 if self.y > 1:
                     self.y -= 1
-            if key == ord("s"):
+            if input_key == ord("s"):
                 if self.y < board_height - self.height - 1:
                     self.y += 1
 
-        elif player_id == 2:
-            if key == ord("i"):
+        if player_id == 2:
+            if input_key == ord("i"):
                 if self.y > 1:
                     self.y -= 1
-            if key == ord("k"):
+            if input_key == ord("k"):
                 if self.y < board_height - self.height - 1:
                     self.y += 1
 
 
 class Ball:
-    pass
+    def __init__(self):
+        self.x = board_width // 2
+        self.y = board_height // 2
+
+        self.speed_x = random.choice([-0.02, 0.02])
+        self.speed_y = random.uniform(-0.04, 0.04)
+
+    def draw(self):
+        self.x += self.speed_x
+        self.y += self.speed_y
+        screen.addstr(int(self.y), int(self.x), "o")
+
+    def check_collision(self):
+        pass
 
 
 player1 = Player(1)
 player2 = Player(2)
+ball = Ball()
 
 while not game_exit:
     screen.clear()
@@ -63,6 +77,9 @@ while not game_exit:
 
     player1.draw()
     player2.draw()
+    ball.draw()
+
+    curses.curs_set(False)
 
     key = screen.getch()
     if key == 27:
