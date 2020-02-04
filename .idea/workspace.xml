@@ -47,7 +47,7 @@
       <option name="presentableId" value="Default" />
       <updated>1580772832608</updated>
       <workItem from="1580772838690" duration="2338000" />
-      <workItem from="1580822445378" duration="4508000" />
+      <workItem from="1580822445378" duration="6659000" />
     </task>
     <servers />
   </component>
@@ -63,5 +63,9 @@
       <screen x="0" y="0" width="1536" height="864" />
     </state>
     <state x="127" y="79" key="refactoring.ChangeSignatureDialog/0.0.1536.864@0.0.1536.864" timestamp="1580828411432" />
+    <state x="46" y="185" width="672" height="678" key="search.everywhere.popup" timestamp="1580853243778">
+      <screen x="0" y="0" width="1536" height="864" />
+    </state>
+    <state x="46" y="185" width="672" height="678" key="search.everywhere.popup/0.0.1536.864@0.0.1536.864" timestamp="1580853243778" />
   </component>
 </project>
