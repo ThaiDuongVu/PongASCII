@@ -10,13 +10,15 @@ char = " "
 
 game_exit = False
 
-ball_max_speed_x = 0.015
-ball_max_speed_y = 0.03
+ball_max_speed_x = 0.01
+ball_max_speed_y = 0.015
 
 
 class Player:
     def __init__(self, player_id):
         self.id = player_id
+        self.score = 0
+
         self.height = 4
         self.char = "|"
 
@@ -30,7 +32,12 @@ class Player:
         for i in range(self.height):
             screen.addstr(self.y + i, self.x, self.char)
 
-    def check_input(self, player_id, input_key):
+        if self.id == 1:
+            screen.addstr(3, (board_width // 4), str(self.score))
+        elif self.id == 2:
+            screen.addstr(3, (board_width // 4) * 3, str(self.score))
+
+    def check_input(self, input_key):
         # ASCII table reference: https://www.ascii-code.com/
         if self.id == 1:
             if input_key == ord("w"):
@@ -68,18 +75,22 @@ class Ball:
         if self.y >= board_height - 1:
             self.speed_y = random.uniform(-ball_max_speed_y, 0)
 
-        if self.x <= 0 or self.x >= board_width:
+        if self.x <= 0:
+            player2.score += 1
+            self.__init__()
+        if self.x >= board_width:
+            player1.score += 1
             self.__init__()
 
     def check_collision_player(self, player):
         if player.id == 1:
-            if self.x <= player.x:
-                if player.y >= self.y >= player.y + player.height:
+            if self.x <= player.x + 1:
+                if player.y <= self.y <= player.y + player.height:
                     self.speed_x = ball_max_speed_x
 
         elif player.id == 2:
-            if self.x >= player.x:
-                if player.y >= self.y >= player.y + player.height:
+            if self.x >= player.x - 1:
+                if player.y <= self.y <= player.y + player.height:
                     self.speed_x = -ball_max_speed_x
 
 
@@ -105,8 +116,8 @@ while not game_exit:
     key = screen.getch()
     if key == 27:
         game_exit = True
-    player1.check_input(1, key)
-    player2.check_input(2, key)
+    player1.check_input(key)
+    player2.check_input(key)
 
     ball.check_collision_wall()
     ball.check_collision_player(player1)
