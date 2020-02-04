@@ -11,14 +11,46 @@ char = " "
 
 game_exit = False
 
-player_height = 4
-player_char = "|"
 
-player1_x = 2
-player1_y = board_height // 2 - player_height // 2
+class Player:
+    def __init__(self, player_id):
+        self.height = 4
+        self.char = "|"
 
-player2_x = board_width - 2 * 2
-player2_y = board_height // 2 - player_height // 2
+        if player_id == 1:
+            self.x = 3
+        elif player_id == 2:
+            self.x = board_width - 3 - 1
+        self.y = board_height // 2 - self.height // 2
+
+    def draw(self):
+        for i in range(self.height):
+            screen.addstr(self.y + i, self.x, self.char)
+
+    def check_input(self, player_id, key):
+        if player_id == 1:
+            if key == ord("w"):
+                if self.y > 1:
+                    self.y -= 1
+            if key == ord("s"):
+                if self.y < board_height - self.height - 1:
+                    self.y += 1
+
+        elif player_id == 2:
+            if key == ord("i"):
+                if self.y > 1:
+                    self.y -= 1
+            if key == ord("k"):
+                if self.y < board_height - self.height - 1:
+                    self.y += 1
+
+
+class Ball:
+    pass
+
+
+player1 = Player(1)
+player2 = Player(2)
 
 while not game_exit:
     screen.clear()
@@ -29,20 +61,15 @@ while not game_exit:
             else:
                 screen.addstr(y, x, char)
 
-    for i in range(player_height):
-        screen.addstr(player1_y + i, player1_x, player_char)
-        screen.addstr(player2_y + i, player2_x, player_char)
-
-    screen.refresh()
+    player1.draw()
+    player2.draw()
 
     key = screen.getch()
     if key == 27:
         game_exit = True
-    if key == ord("w"):
-        if player1_y > 0:
-            player1_y -= 1
-    if key == ord("s"):
-        if player1_y < board_height - player_height:
-            player1_y += 1
+    player1.check_input(1, key)
+    player2.check_input(2, key)
+
+    screen.refresh()
 
 curses.endwin()
