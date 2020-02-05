@@ -14,6 +14,7 @@ ball_max_speed_x = 0.05
 ball_max_speed_y = 0.02
 
 pause = False
+start = False
 
 
 def add_text():
@@ -68,13 +69,13 @@ class Player:
 class Ball:
     def __init__(self):
         self.x = board_width // 2
-        self.y = board_height // 2
+        self.y = board_height // 2 - 1
 
         self.speed_x = random.choice([-ball_max_speed_x, ball_max_speed_x])
         self.speed_y = random.uniform(-ball_max_speed_y, ball_max_speed_y)
 
     def draw(self):
-        if not pause:
+        if not pause and start:
             self.x += self.speed_x
             self.y += self.speed_y
         screen.addstr(int(self.y), int(self.x), "o")
@@ -135,6 +136,8 @@ while not game_exit:
     player2.draw()
 
     ball.draw()
+    if not start:
+        screen.addstr(board_height // 2 - 1, board_width // 2 - 10, "Press Space to start")
     add_text()
 
     curses.curs_set(False)
@@ -148,15 +151,17 @@ while not game_exit:
             pause = False
         else:
             pause = True
+    if key == 32:
+        start = True
 
-    if not pause:
+    if not pause and start:
         player1.check_input(key)
         player2.check_input(key)
 
         ball.check_collision_wall()
         ball.check_collision_player(player1)
         ball.check_collision_player(player2)
-    else:
+    if pause:
         screen.addstr(board_height // 2 - 1, board_width // 2 - 2, "PAUSE")
 
     screen.refresh()
