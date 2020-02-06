@@ -8,13 +8,8 @@ board_width = 40 * 2
 board_height = 20
 char = " "
 
-game_exit = False
-
 ball_max_speed_x = 0.05
 ball_max_speed_y = 0.02
-
-pause = False
-start = False
 
 
 def add_text():
@@ -22,6 +17,10 @@ def add_text():
     screen.addstr(board_height + 1, 0, "Player 2 control: up: I, down: K")
     screen.addstr(board_height + 2, 0, "Press ESC to exit")
     screen.addstr(board_height + 3, 0, "Press B to pause")
+
+
+def win(player_id):
+    pass
 
 
 class Player:
@@ -65,6 +64,10 @@ class Player:
                 if self.y < board_height - self.height - 1:
                     self.y += 1
 
+    def check_win(self):
+        if self.score >= 11:
+            win(self.id)
+
 
 class Ball:
     def __init__(self):
@@ -74,7 +77,7 @@ class Ball:
         self.speed_x = random.choice([-ball_max_speed_x, ball_max_speed_x])
         self.speed_y = random.uniform(-ball_max_speed_y, ball_max_speed_y)
 
-    def draw(self):
+    def draw(self, pause, start):
         if not pause and start:
             self.x += self.speed_x
             self.y += self.speed_y
@@ -91,7 +94,7 @@ class Ball:
         elif side == "right":
             self.speed_x = -ball_max_speed_x
 
-    def check_collision_wall(self):
+    def check_collision_wall(self, player1, player2):
         if self.y <= 1:
             self.speed_y = random.uniform(0, ball_max_speed_y)
         if self.y >= board_height - 1:
@@ -119,51 +122,58 @@ class Ball:
                     self.speed_y = random.uniform(-ball_max_speed_y, ball_max_speed_y)
 
 
-player1 = Player(1)
-player2 = Player(2)
-ball = Ball()
+def main_loop():
+    game_exit = False
+    pause = False
+    start = False
 
-while not game_exit:
-    screen.clear()
-    for y in range(board_height):
-        for x in range(board_width):
-            if x == 0 or y == 0 or x == board_width - 1 or y == board_height - 1 or x == board_width // 2:
-                screen.addstr(y, x, "#")
+    player1 = Player(1)
+    player2 = Player(2)
+    ball = Ball()
+
+    while not game_exit:
+        screen.clear()
+        for y in range(board_height):
+            for x in range(board_width):
+                if x == 0 or y == 0 or x == board_width - 1 or y == board_height - 1 or x == board_width // 2:
+                    screen.addstr(y, x, "#")
+                else:
+                    screen.addstr(y, x, char)
+
+        player1.draw()
+        player2.draw()
+
+        ball.draw(pause, start)
+        if not start:
+            screen.addstr(board_height // 2 - 1, board_width // 2 - 10, "Press Space to start")
+        add_text()
+
+        curses.curs_set(False)
+
+        key = screen.getch()
+        if key == 27:
+            game_exit = True
+
+        if key == ord("b"):
+            if pause:
+                pause = False
             else:
-                screen.addstr(y, x, char)
+                pause = True
+        if key == 32:
+            start = True
 
-    player1.draw()
-    player2.draw()
+        if not pause and start:
+            player1.check_input(key)
+            player2.check_input(key)
 
-    ball.draw()
-    if not start:
-        screen.addstr(board_height // 2 - 1, board_width // 2 - 10, "Press Space to start")
-    add_text()
-
-    curses.curs_set(False)
-
-    key = screen.getch()
-    if key == 27:
-        game_exit = True
-
-    if key == ord("b"):
+            ball.check_collision_wall(player1, player2)
+            ball.check_collision_player(player1)
+            ball.check_collision_player(player2)
         if pause:
-            pause = False
-        else:
-            pause = True
-    if key == 32:
-        start = True
+            screen.addstr(board_height // 2 - 1, board_width // 2 - 2, "PAUSE")
 
-    if not pause and start:
-        player1.check_input(key)
-        player2.check_input(key)
+        screen.refresh()
 
-        ball.check_collision_wall()
-        ball.check_collision_player(player1)
-        ball.check_collision_player(player2)
-    if pause:
-        screen.addstr(board_height // 2 - 1, board_width // 2 - 2, "PAUSE")
+    curses.endwin()
 
-    screen.refresh()
-
-curses.endwin()
+main_loop()
