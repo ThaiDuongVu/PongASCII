@@ -1,5 +1,6 @@
 import curses
 import random
+import sys
 
 screen = curses.initscr()
 screen.nodelay(1)
@@ -20,7 +21,8 @@ def add_text():
 
 
 def win(player_id):
-    pass
+    screen.addstr(board_height // 2 - 1, board_width // 2 - 6, "Player " + player_id + " wins", )
+    screen.addstr(board_height // 2, board_width // 2 - 10, "Press Space to start")
 
 
 class Player:
@@ -63,10 +65,6 @@ class Player:
             if input_key == ord("k"):
                 if self.y < board_height - self.height - 1:
                     self.y += 1
-
-    def check_win(self):
-        if self.score >= 11:
-            win(self.id)
 
 
 class Ball:
@@ -127,6 +125,8 @@ def main_loop():
     pause = False
     start = False
 
+    game_over = False
+
     player1 = Player(1)
     player2 = Player(2)
     ball = Ball()
@@ -153,6 +153,8 @@ def main_loop():
         key = screen.getch()
         if key == 27:
             game_exit = True
+            curses.endwin()
+            quit()
 
         if key == ord("b"):
             if pause:
@@ -160,9 +162,13 @@ def main_loop():
             else:
                 pause = True
         if key == 32:
-            start = True
+            if not start:
+                start = True
+                ball.__init__()
+            if game_over:
+                main_loop()
 
-        if not pause and start:
+        if not pause and start and not game_over:
             player1.check_input(key)
             player2.check_input(key)
 
@@ -172,8 +178,34 @@ def main_loop():
         if pause:
             screen.addstr(board_height // 2 - 1, board_width // 2 - 2, "PAUSE")
 
-        screen.refresh()
+        if player1.score >= 5:
+            game_over = True
+
+            ball.speed_x = 0
+            ball.speed_y = 0
+
+            screen.addstr(board_height // 2 - 1, board_width // 2 - 6, "Player 1 wins", )
+            screen.addstr(board_height // 2, board_width // 2 - 10, "Press Space to start")
+
+            screen.refresh()
+
+        if player2.score >= 5:
+            game_over = True
+
+            ball.speed_x = 0
+            ball.speed_y = 0
+
+            screen.addstr(board_height // 2 - 1, board_width // 2 - 6, "Player 2 wins", )
+            screen.addstr(board_height // 2, board_width // 2 - 10, "Press Space to start")
+
+            screen.refresh()
+
+        if not start and not game_over or pause:
+            screen.refresh()
 
     curses.endwin()
+    quit()
+    sys.exit()
+
 
 main_loop()
