@@ -25,6 +25,15 @@ def win(player_id):
     screen.addstr(board_height // 2, board_width // 2 - 10, "Press Space to start")
 
 
+def draw_screen():
+    for y in range(board_height):
+            for x in range(board_width):
+                if x == 0 or y == 0 or x == board_width - 1 or y == board_height - 1 or x == board_width // 2:
+                    screen.addstr(y, x, "#")
+                else:
+                    screen.addstr(y, x, char)
+
+
 class Player:
     def __init__(self, player_id):
         self.id = player_id
@@ -133,12 +142,7 @@ def main_loop():
 
     while not game_exit:
         screen.clear()
-        for y in range(board_height):
-            for x in range(board_width):
-                if x == 0 or y == 0 or x == board_width - 1 or y == board_height - 1 or x == board_width // 2:
-                    screen.addstr(y, x, "#")
-                else:
-                    screen.addstr(y, x, char)
+        draw_screen()
 
         player1.draw()
         player2.draw()
