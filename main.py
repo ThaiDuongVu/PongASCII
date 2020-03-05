@@ -27,11 +27,11 @@ def win(player_id):
 
 def draw_screen():
     for y in range(board_height):
-            for x in range(board_width):
-                if x == 0 or y == 0 or x == board_width - 1 or y == board_height - 1 or x == board_width // 2:
-                    screen.addstr(y, x, "#")
-                else:
-                    screen.addstr(y, x, char)
+        for x in range(board_width):
+            if x == 0 or y == 0 or x == board_width - 1 or y == board_height - 1 or x == board_width // 2:
+                screen.addstr(y, x, "#")
+            else:
+                screen.addstr(y, x, char)
 
 
 class Player:
