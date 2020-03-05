@@ -2,6 +2,8 @@ import curses
 import random
 import sys
 
+from player import Player
+
 screen = curses.initscr()
 screen.nodelay(1)
 
@@ -32,48 +34,6 @@ def draw_screen():
                 screen.addstr(y, x, "#")
             else:
                 screen.addstr(y, x, char)
-
-
-class Player:
-    def __init__(self, player_id):
-        self.id = player_id
-        self.score = 0
-
-        self.height = 4
-        self.char = "|"
-
-        if self.id == 1:
-            self.x = 3
-        elif self.id == 2:
-            self.x = board_width - 3 - 1
-        self.y = board_height // 2 - self.height // 2
-
-    def draw(self):
-        for i in range(self.height):
-            screen.addstr(self.y + i, self.x, self.char)
-
-        if self.id == 1:
-            screen.addstr(3, (board_width // 4), str(self.score))
-        elif self.id == 2:
-            screen.addstr(3, (board_width // 4) * 3, str(self.score))
-
-    def check_input(self, input_key):
-        # ASCII table reference: https://www.ascii-code.com/
-        if self.id == 1:
-            if input_key == ord("w"):
-                if self.y > 1:
-                    self.y -= 1
-            if input_key == ord("s"):
-                if self.y < board_height - self.height - 1:
-                    self.y += 1
-
-        if self.id == 2:
-            if input_key == ord("i"):
-                if self.y > 1:
-                    self.y -= 1
-            if input_key == ord("k"):
-                if self.y < board_height - self.height - 1:
-                    self.y += 1
 
 
 class Ball:
@@ -136,16 +96,16 @@ def main_loop():
 
     game_over = False
 
-    player1 = Player(1)
-    player2 = Player(2)
+    player1 = Player(1, board_width, board_height)
+    player2 = Player(2, board_width, board_height)
     ball = Ball()
 
     while not game_exit:
         screen.clear()
         draw_screen()
 
-        player1.draw()
-        player2.draw()
+        player1.draw(screen, board_width)
+        player2.draw(screen, board_width)
 
         ball.draw(pause, start)
         if not start:
@@ -173,8 +133,8 @@ def main_loop():
                 main_loop()
 
         if not pause and start and not game_over:
-            player1.check_input(key)
-            player2.check_input(key)
+            player1.check_input(key, board_height)
+            player2.check_input(key, board_height)
 
             ball.check_collision_wall(player1, player2)
             ball.check_collision_player(player1)
