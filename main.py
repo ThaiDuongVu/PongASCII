@@ -1,8 +1,8 @@
 import curses
-import random
 import sys
 
 from player import Player
+from ball import Ball
 
 screen = curses.initscr()
 screen.nodelay(1)
@@ -36,59 +36,6 @@ def draw_screen():
                 screen.addstr(y, x, char)
 
 
-class Ball:
-    def __init__(self):
-        self.x = board_width // 2
-        self.y = board_height // 2 - 1
-
-        self.speed_x = random.choice([-ball_max_speed_x, ball_max_speed_x])
-        self.speed_y = random.uniform(-ball_max_speed_y, ball_max_speed_y)
-
-    def draw(self, pause, start):
-        if not pause and start:
-            self.x += self.speed_x
-            self.y += self.speed_y
-        screen.addstr(int(self.y), int(self.x), "o")
-
-    def reset(self, side):
-        self.x = board_width // 2
-        self.y = board_height // 2
-
-        self.speed_y = random.uniform(-ball_max_speed_y, ball_max_speed_y)
-
-        if side == "left":
-            self.speed_x = ball_max_speed_x
-        elif side == "right":
-            self.speed_x = -ball_max_speed_x
-
-    def check_collision_wall(self, player1, player2):
-        if self.y <= 1:
-            self.speed_y = random.uniform(0, ball_max_speed_y)
-        if self.y >= board_height - 1:
-            self.speed_y = random.uniform(-ball_max_speed_y, 0)
-
-        if self.x <= 0:
-            player2.score += 1
-            self.reset("left")
-
-        if self.x >= board_width:
-            player1.score += 1
-            self.reset("right")
-
-    def check_collision_player(self, player):
-        if player.id == 1:
-            if self.x <= player.x + 1:
-                if player.y <= self.y <= player.y + player.height:
-                    self.speed_x = ball_max_speed_x
-                    self.speed_y = random.uniform(-ball_max_speed_y, ball_max_speed_y)
-
-        elif player.id == 2:
-            if self.x >= player.x - 1:
-                if player.y <= self.y <= player.y + player.height:
-                    self.speed_x = -ball_max_speed_x
-                    self.speed_y = random.uniform(-ball_max_speed_y, ball_max_speed_y)
-
-
 def main_loop():
     game_exit = False
     pause = False
@@ -98,7 +45,7 @@ def main_loop():
 
     player1 = Player(1, board_width, board_height)
     player2 = Player(2, board_width, board_height)
-    ball = Ball()
+    ball = Ball(board_width, board_height, ball_max_speed_x, ball_max_speed_y)
 
     while not game_exit:
         screen.clear()
@@ -107,7 +54,7 @@ def main_loop():
         player1.draw(screen, board_width)
         player2.draw(screen, board_width)
 
-        ball.draw(pause, start)
+        ball.draw(pause, start, screen)
         if not start:
             screen.addstr(board_height // 2 - 1, board_width // 2 - 10, "Press Space to start")
         add_text()
@@ -128,7 +75,7 @@ def main_loop():
         if key == 32:
             if not start:
                 start = True
-                ball.__init__()
+                ball.__init__(board_width, board_height, ball_max_speed_x, ball_max_speed_y)
             if game_over:
                 main_loop()
 
@@ -136,9 +83,9 @@ def main_loop():
             player1.check_input(key, board_height)
             player2.check_input(key, board_height)
 
-            ball.check_collision_wall(player1, player2)
-            ball.check_collision_player(player1)
-            ball.check_collision_player(player2)
+            ball.check_collision_wall(player1, player2, board_width, board_height, ball_max_speed_x, ball_max_speed_y)
+            ball.check_collision_player(player1, ball_max_speed_x, ball_max_speed_y)
+            ball.check_collision_player(player2, ball_max_speed_x, ball_max_speed_y)
         if pause:
             screen.addstr(board_height // 2 - 1, board_width // 2 - 2, "PAUSE")
 

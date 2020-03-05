@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c5365976-9e87-4e22-a417-44688d5a85c9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/player.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ball.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -64,7 +65,7 @@
       <workItem from="1581014980771" duration="1867000" />
       <workItem from="1581195505890" duration="3000" />
       <workItem from="1583432148545" duration="24000" />
-      <workItem from="1583440018839" duration="283000" />
+      <workItem from="1583440018839" duration="735000" />
     </task>
     <servers />
   </component>
