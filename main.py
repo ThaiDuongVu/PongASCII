@@ -1,8 +1,8 @@
 import curses
 import sys
 
-from player import Player
 from ball import Ball
+from player import Player
 
 screen = curses.initscr()
 screen.nodelay(1)
@@ -13,6 +13,8 @@ char = " "
 
 ball_max_speed_x = 0.05
 ball_max_speed_y = 0.02
+
+max_score = 5
 
 
 def add_text():
@@ -34,6 +36,18 @@ def draw_screen():
                 screen.addstr(y, x, "#")
             else:
                 screen.addstr(y, x, char)
+
+
+def player_win(player1, player2, ball):
+    if player1.score >= max_score and player2.score <= max_score - 2:
+        ball.speed_x = 0
+        ball.speed_y = 0
+
+        screen.addstr(board_height // 2 - 1, board_width // 2 - 6, "Player 1 wins", )
+        screen.addstr(board_height // 2, board_width // 2 - 10, "Press Space to start")
+
+        screen.refresh()
+        return True
 
 
 def main_loop():
@@ -89,27 +103,10 @@ def main_loop():
         if pause:
             screen.addstr(board_height // 2 - 1, board_width // 2 - 2, "PAUSE")
 
-        if player1.score >= 5:
+        if player_win(player1, player2, ball):
             game_over = True
-
-            ball.speed_x = 0
-            ball.speed_y = 0
-
-            screen.addstr(board_height // 2 - 1, board_width // 2 - 6, "Player 1 wins", )
-            screen.addstr(board_height // 2, board_width // 2 - 10, "Press Space to start")
-
-            screen.refresh()
-
-        if player2.score >= 5:
+        elif player_win(player2, player1, ball):
             game_over = True
-
-            ball.speed_x = 0
-            ball.speed_y = 0
-
-            screen.addstr(board_height // 2 - 1, board_width // 2 - 6, "Player 2 wins", )
-            screen.addstr(board_height // 2, board_width // 2 - 10, "Press Space to start")
-
-            screen.refresh()
 
         if not start and not game_over or pause:
             screen.refresh()
