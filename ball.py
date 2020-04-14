@@ -34,21 +34,25 @@ class Ball:
 
         if self.x <= 0:
             player2.score += 1
-            self.reset("left", board_width, board_height, ball_max_speed_x, ball_max_speed_y)
+            self.reset("left", board_width, board_height,
+                       ball_max_speed_x, ball_max_speed_y)
 
         if self.x >= board_width:
             player1.score += 1
-            self.reset("right", board_width, board_height, ball_max_speed_x, ball_max_speed_y)
+            self.reset("right", board_width, board_height,
+                       ball_max_speed_x, ball_max_speed_y)
 
     def check_collision_player(self, player, ball_max_speed_x, ball_max_speed_y):
         if player.id == 1:
             if self.x <= player.x + 1:
                 if player.y <= self.y <= player.y + player.height:
                     self.speed_x = ball_max_speed_x
-                    self.speed_y = random.uniform(-ball_max_speed_y, ball_max_speed_y)
+                    self.speed_y = random.uniform(-ball_max_speed_y,
+                                                  ball_max_speed_y)
 
         elif player.id == 2:
             if self.x >= player.x - 1:
                 if player.y <= self.y <= player.y + player.height:
                     self.speed_x = -ball_max_speed_x
-                    self.speed_y = random.uniform(-ball_max_speed_y, ball_max_speed_y)
+                    self.speed_y = random.uniform(-ball_max_speed_y,
+                                                  ball_max_speed_y)

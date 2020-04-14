@@ -25,8 +25,10 @@ def add_text():
 
 
 def win(player_id):
-    screen.addstr(board_height // 2 - 1, board_width // 2 - 6, "Player " + player_id + " wins", )
-    screen.addstr(board_height // 2, board_width // 2 - 10, "Press Space to start")
+    screen.addstr(board_height // 2 - 1, board_width //
+                  2 - 6, "Player " + player_id + " wins", )
+    screen.addstr(board_height // 2, board_width //
+                  2 - 10, "Press Space to start")
 
 
 def draw_screen():
@@ -43,8 +45,10 @@ def player_win(player1, player2, ball):
         ball.speed_x = 0
         ball.speed_y = 0
 
-        screen.addstr(board_height // 2 - 1, board_width // 2 - 6, "Player 1 wins", )
-        screen.addstr(board_height // 2, board_width // 2 - 10, "Press Space to start")
+        screen.addstr(board_height // 2 - 1, board_width //
+                      2 - 6, "Player 1 wins", )
+        screen.addstr(board_height // 2, board_width //
+                      2 - 10, "Press Space to start")
 
         screen.refresh()
         return True
@@ -70,7 +74,8 @@ def main_loop():
 
         ball.draw(pause, start, screen)
         if not start:
-            screen.addstr(board_height // 2 - 1, board_width // 2 - 10, "Press Space to start")
+            screen.addstr(board_height // 2 - 1, board_width //
+                          2 - 10, "Press Space to start")
         add_text()
 
         curses.curs_set(False)
@@ -89,7 +94,8 @@ def main_loop():
         if key == 32:
             if not start:
                 start = True
-                ball.__init__(board_width, board_height, ball_max_speed_x, ball_max_speed_y)
+                ball.__init__(board_width, board_height,
+                              ball_max_speed_x, ball_max_speed_y)
             if game_over:
                 main_loop()
 
@@ -97,9 +103,12 @@ def main_loop():
             player1.check_input(key, board_height)
             player2.check_input(key, board_height)
 
-            ball.check_collision_wall(player1, player2, board_width, board_height, ball_max_speed_x, ball_max_speed_y)
-            ball.check_collision_player(player1, ball_max_speed_x, ball_max_speed_y)
-            ball.check_collision_player(player2, ball_max_speed_x, ball_max_speed_y)
+            ball.check_collision_wall(
+                player1, player2, board_width, board_height, ball_max_speed_x, ball_max_speed_y)
+            ball.check_collision_player(
+                player1, ball_max_speed_x, ball_max_speed_y)
+            ball.check_collision_player(
+                player2, ball_max_speed_x, ball_max_speed_y)
         if pause:
             screen.addstr(board_height // 2 - 1, board_width // 2 - 2, "PAUSE")
 
